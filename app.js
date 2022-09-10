@@ -47,13 +47,13 @@ function put() {
     var editbtn = document.createElement("button");
     var e = document.createTextNode("EDIT")
     editbtn.appendChild(e);
-    editbtn.setAttribute("onClick", "edit()")
+    editbtn.setAttribute("onClick", "edit(this)")
     editbtn.style.height = "23px";
     editbtn.style.width = "50px";
     editbtn.style.borderRadius = "5px"
     editbtn.style.backgroundColor = "white";
     editbtn.style.border = "1px solid gold";
-    editbtn.style.marginLeft = "40%"
+    editbtn.style.marginLeft = "40%";
 
     // delete button
     var dltbtn = document.createElement("button");
@@ -81,30 +81,35 @@ function Delete() {
     vl.remove()
 }
 
-function edit() {
+function edit(now) {
     // var editTask = function(){
-        console.log("Edit task...");
+        console.log("Edit task.");
+        var edit1 = prompt("change your value")
+    
+        var edit = now.parentNode;
+        edit.innerText = edit1;
+        vl.appendChild(editbtn);
+        vl.appendChild(dltbtn);
+
+        // var listItem = this.parentNode;
+        // var editInput = listItem.querySelector("vl");
+        // var label = listItem.querySelector("label");
+    
+        // var containsClass = listItem.classList.contains("editMode");
     
     
-        var listItem = this.parentNode;
-        var editInput = listItem.querySelector("vl");
-        var label = listItem.querySelector("label");
-    
-        var containsClass = listItem.classList.contains("editMode");
-    
-    
-            //if the class pf parent is .editmode
-        if (containsClass){
+            //if the class of parent is .editmode
+        // if (containsClass){
           //label text become the input's value  
-          label.innerText = editInput.value;
+        //   editInput.innerText = editInput.value;
     
-        } else {
+        // } else {
             //switch to .editmode
             //input value becomes the label's text
-          editInput.vaule = label.innerText;
-        }
+        //   editInput.vaule = label.innerText;
+        // }
     
-        listItem.classList.toggle("editMode"); //toggle .editmode on the parent
+        // listItem.classList.toggle("editMode"); //toggle .editmode on the parent
     
     }
 // }
