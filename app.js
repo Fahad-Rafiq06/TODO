@@ -1,115 +1,155 @@
-var container = document.getElementById('container');
-var heading = document.createElement("h1");
-heading.setAttribute("class", "one");
-var headText = document.createTextNode("Todo App")
-heading.append(headText)
-container.append(heading)
-// containerbox
-var one = document.createElement('div');
-one.setAttribute("class", "one");
-container.append(one);
-// box
-var add = document.createElement('input');
-add.setAttribute("placeholder", "What to do?")
-add.style.height = "50px";
-add.style.width = "350px";
-add.style.backgroundColor = "white";
-add.style.border = "2px solid black";
-add.style.paddingLeft = "20px"
-add.style.borderRadius = "5px"
-one.append(add);
-//  button
-var btn = document.createElement('button');
-var text = document.createTextNode("Add")
-btn.appendChild(text);
-btn.setAttribute("onClick", "put()")
-btn.style.height = "50px";
-btn.style.width = "100px";
-btn.style.borderRadius = "5px"
-btn.style.backgroundColor = "black";
-btn.style.border = "2px solid white";
-btn.style.color = "white";
-btn.style.marginLeft = "10px"
-one.append(btn)
+//Problem: user interaction doesn't provide desired results
+//Solution: add interactivity so the user can manage daily tasks.
 
-//  listcontainer
-var two = document.createElement('div')
-two.setAttribute("class", "two")
-container.append(two);
+var taskInput = document.getElementById("new-task"); // new-task
+var addButton = document.getElementsByTagName("button")[0];//first button
+var incompleteTasksHolder = document.getElementById("incomplete-tasks"); //incomplete-tasks
+var completedTasksHolder = document.getElementById("completed-tasks"); //completed-tasks
 
-// functionofadd
-function put() {
-    v = add.value;
-    console.log(v)
-    add.value = "";
+//New Task List item
 
-    // edit_button
-    var editbtn = document.createElement("button");
-    var e = document.createTextNode("EDIT")
-    editbtn.appendChild(e);
-    editbtn.setAttribute("onClick", "edit(this)")
-    editbtn.style.height = "23px";
-    editbtn.style.width = "50px";
-    editbtn.style.borderRadius = "5px"
-    editbtn.style.backgroundColor = "white";
-    editbtn.style.border = "1px solid gold";
-    editbtn.style.marginLeft = "40%";
+var createNewTaskElement = function(taskString) {
+	// create List Item
+  var listItem = document.createElement("li");
+  // input checkbox
+  var checkBox = document.createElement("input");
+  // label
+  var label = document.createElement("label");
+  // input (text)
+  var editInput = document.createElement("input");
+  // button.edit
+  var editButton = document.createElement("button");
+  // button.delete
+  var deleteButton = document.createElement("button");
+  
+  //Each element needs modified 
+  
+  checkBox.type = "checkBox";
+  editInput.type = "text";
+  
+  editButton.innerText = "Edit";
+  editButton.className = "edit";
+  deleteButton.innerText = "Delete";
+  deleteButton.className = "delete";
+  
+  label.innerText = taskString;
+  
+  // Each element needs appending
+  listItem.appendChild(checkBox);
+  listItem.appendChild(label);
+  listItem.appendChild(editInput);
+  listItem.appendChild(editButton);
+  listItem.appendChild(deleteButton);
 
-    // delete button
-    var dltbtn = document.createElement("button");
-    var d = document.createTextNode("DELETE")
-    dltbtn.appendChild(d);
-    dltbtn.setAttribute("onClick", "Delete()")
-    dltbtn.style.height = "23px";
-    dltbtn.style.width = "70px";
-    dltbtn.style.borderRadius = "5px"
-    dltbtn.style.backgroundColor = "white";
-    dltbtn.style.border = "1px solid gold";
-    dltbtn.style.marginLeft = "5px";
-
-    vl = document.createElement('div');
-    vl.setAttribute("class", "show");
-    vl.setAttribute("id", Math.random())
-    t = document.createTextNode(v)
-    vl.append(t)
-    vl.appendChild(editbtn)
-    vl.appendChild(dltbtn)
-    two.append(vl)
-
-}
-function Delete() {
-    vl.remove()
+	return listItem;
 }
 
-function edit(now) {
-    // var editTask = function(){
-        console.log("Edit task.");
-        var edit1 = prompt("change your value")
-    
-        var edit = now.parentNode;
-        edit.innerText = edit1;
-        vl.appendChild(editbtn);
-        vl.appendChild(dltbtn);
 
-        // var listItem = this.parentNode;
-        // var editInput = listItem.querySelector("vl");
-        // var label = listItem.querySelector("label");
-    
-        // var containsClass = listItem.classList.contains("editMode");
-    
-    
-            //if the class of parent is .editmode
-        // if (containsClass){
-          //label text become the input's value  
-        //   editInput.innerText = editInput.value;
-    
-        // } else {
-            //switch to .editmode
-            //input value becomes the label's text
-        //   editInput.vaule = label.innerText;
-        // }
-    
-        // listItem.classList.toggle("editMode"); //toggle .editmode on the parent
-    
-    }
-// }
+//Add a new task
+var addTask = function() {
+  console.log("Add Task...");
+  //Create a new list item with the text from the #new-task:
+  var listItem = createNewTaskElement(taskInput.value);
+  //Append listItem to incompleteTaskHolder
+  incompleteTasksHolder.appendChild(listItem);
+  bindTaskEvents(listItem, taskCompleted);
+  taskInput.value = "";
+}
+
+//Edit an existing task
+var editTask = function() {
+    console.log("Edit Task...");
+  
+var listItem = this.parentNode;
+  
+var editInput = listItem.querySelector("input[type=text]");
+var label = listItem.querySelector("label");
+  
+var containsClass = listItem.classList.contains("editMode");
+  
+  
+  // if class of the parent is .editMode
+  if (containsClass) {
+      //Switch from .editMode
+      //label text become the input's value
+      label.innerText = editInput.value;
+  } else {
+      //Switch to .editMode
+      //input value becomes the labels text
+     	editInput.value = label.innerText;
+  }
+  //Toggle .editMode on the parent 
+  listItem.classList.toggle("editMode");
+}
+
+//Delete an existing task
+var deleteTask = function () {
+    console.log("Delete Task...");
+		//Remove the parent list item from the ul
+  	var listItem = this.parentNode;
+  	var ul = listItem.parentNode;
+  
+  	ul.removeChild(listItem);
+}
+
+//Mark a task as complete
+var taskCompleted = function() {
+   console.log("Task Complete...");
+  //When the Checkbox is checked 
+  //Append the task list item to the #completed-tasks ul
+   var listItem = this.parentNode;
+   completedTasksHolder.appendChild(listItem);
+   bindTaskEvents(listItem, taskIncomplete);
+}
+
+
+//Mark a task as incomplete
+var taskIncomplete = function() {
+  console.log("Task Incomplete...");
+ 	//When the checkbox is unchecked appendTo #incomplete-tasks
+  var listItem = this.parentNode;
+  incompleteTasksHolder.appendChild(listItem);
+  bindTaskEvents(listItem, taskCompleted);
+}
+
+
+//Set the click handler to the addTask function
+addButton.addEventListener("click", addTask); 
+
+
+var bindTaskEvents = function(taskListItem, checkBoxEventHandler) {
+  	console.log("Bind List item events");
+  	// select listitems chidlren
+  	var checkBox = taskListItem.querySelector('input[type="checkbox"]');
+    var editButton = taskListItem.querySelector("button.edit");
+    var deleteButton = taskListItem.querySelector("button.delete");
+		//bind editTask to edit button
+  	editButton.onclick = editTask;
+		//bind deleteTask to delete button
+ 		deleteButton.onclick = deleteTask;
+		//bind checkBoxEventHandler to checkbox
+  	checkBox.onchange = checkBoxEventHandler;
+  
+}
+
+//cycle over incompleteTaskHolder ul list items
+for (var i = 0; i < incompleteTasksHolder.children.length; i ++) {
+  //bind events to list item's children (taskCompleted)	
+  bindTaskEvents(incompleteTasksHolder.children[i], taskCompleted);
+}
+
+//cycle over completedTaskHolder ul list items
+for (var i = 0; i < completedTasksHolder.children.length; i ++) {
+  //bind events to list item's children (taskCompleted)	
+  bindTaskEvents(completedTasksHolder.children[i], taskIncomplete);
+}
+
+
+  
+  
+  
+  
+  
+  
+  
+  
